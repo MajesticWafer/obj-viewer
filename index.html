@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Canvas Rotation</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="myCanvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById('myCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const object = new Image();
+    object.src = 'object.obj';
+
+    let angle = 0;
+    const rpm = 6;
+    const fps = 60;
+    const interval = 1000 / fps;
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(angle * Math.PI / 180);
+      ctx.drawImage(object, -object.width / 2, -object.height / 2);
+      ctx.restore();
+      angle += 360 / (rpm * 60);
+      requestAnimationFrame(draw);
+    }
+
+    object.onload = function() {
+      draw();
+    };
+  </script>
+</body>
+</html>
