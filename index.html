@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Canvas Rotation</title>
+  <title>3D Model Rotation</title>
   <style>
     body {
       margin: 0;
@@ -10,36 +10,34 @@
   </style>
 </head>
 <body>
-  <canvas id="myCanvas"></canvas>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
   <script>
-    const canvas = document.getElementById('myCanvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
 
-    const object = new Image();
-    object.src = 'object.fbx';
+    const loader = new THREE.FBXLoader();
+    let object;
 
-    let angle = 0;
-    const rpm = 6;
-    const fps = 60;
-    const interval = 1000 / fps;
+    loader.load('object.fbx', function (fbx) {
+      object = fbx;
+      scene.add(object);
+    });
 
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.save();
-      ctx.translate(canvas.width / 2, canvas.height / 2);
-      ctx.rotate(angle * Math.PI / 180);
-      ctx.drawImage(object, -object.width / 2, -object.height / 2);
-      ctx.restore();
-      angle += 360 / (rpm * 60);
-      requestAnimationFrame(draw);
+    camera.position.z = 5;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (object) {
+        object.rotation.z += 0.01;
+      }
+      renderer.render(scene, camera);
     }
 
-    object.onload = function() {
-      draw();
-    };
+    animate();
   </script>
 </body>
 </html>
